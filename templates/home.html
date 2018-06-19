@@ -1,0 +1,129 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" >
+
+<html>
+	<head lang = "en" >
+		<meta charset = "utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Property Home</title>
+		<link rel = "stylesheet" type = "text/css" href = "{{url_for('static', filename='style.css') }}" />
+		<!<link rel = "stylesheet" type = "text/css" href = "style.css" />>
+
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css"
+		integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+		<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+
+	</head>
+	<body>
+
+	<div id = "big_wrapper" >
+
+		<header id = "top_header" >
+			<h1>Property Home</h1>
+		</header>
+
+		<!--
+		<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+			<div class="collapse navbar-collapse" id="navbarSupportedContent">
+				<ul class="navbar-nav mr-auto">
+					<li class="nav-item"><a class="nav-link" href="{{url_for('home')}}">Home</a></li>
+					<li class="nav-item"><a class="nav-link" href="about_us.html">About Us</a></li>
+					<li class="nav-item"><a class="nav-link" href="contact_us.html">Contact Us</a></li>
+				</ul>
+			</div>
+		</nav>
+		-->
+
+		<div id = "new_div" class = "container" >
+
+			<section id = "main_section" >
+
+				<article>
+
+					<header>
+						<hgroup>
+							<h2>Enter property details: </h2>
+						</hgroup>
+					</header>
+
+					<form name="form" action="{{url_for('results')}}" method="post">
+
+					  <p>
+						<label for="locality" >Locality:</label>
+						  <select type="text" name="locality" required >
+							<option value="" disabled selected>--Select--</option>
+							<!--<option value="Dhakuria">Dhakuria</option>
+							<option value="Jadavpur">Jadavpur</option>
+							<option value="Gariahat">Gariahat</option>
+							<option value="Ballygunge">Ballygunge</option>
+							<option value="Rajarhat">Rajarhat</option>
+							<option value="New Town">New Town</option>
+							<option value="Chetla">Chetla</option>-->
+							{% for i in locality: %}
+							<option value = "{{ i }}">{{ i }}</option>
+							{% endfor %}
+						  </select>
+					  </p>
+					  <p>
+						<label for="type_of_sale">Type of Sale:</label>
+						<input type="radio" name="type_of_sale" value="New" required /> New Property
+						<input type="radio" name="type_of_sale" value="Resale" /> Resale
+					  </p>
+					  <p>
+						<label for="bhk">BHK:</label>
+						<select name="bhk" placeholder = "--Select--" required >
+						  <option value="" disabled selected>--Select--</option>
+						  <!--<option value="1">1</option>
+						  <option value="2">2</option>
+						  <option value="3">3</option>
+						  <option value="4">4</option>
+						  <option value="5">5</option>-->
+						  {% for i in bhk: %}
+						  <option value = "{{ i }}">{{ i }}</option>
+						  {% endfor %}
+						</select>
+						<label for="floor_area">Floor Area:</label>
+						<input type="number" name="floor_area" placeholder="Floor Area" required />
+						sq. ft.
+					  </p>
+					  <p>
+						<label for="bathrooms">No. of bathrooms:</label>
+						<input type="number" name="bathrooms" placeholder="No. of bathrooms" required />
+					  </p>
+					  <p>
+						<label for="furnishing_status">Furnishing Status:</label>
+						<select name="furnishing_status" placeholder = "--Select--" required >
+						  <option value="" disabled selected >--Select--</option>
+						  <option value="Furnished">Furnished</option>
+						  <option value="Semi-Furnished">Semi-Furnished</option>
+						  <option value="Unfurnished">Unfurnished</option>
+						</select>
+					  </p>
+					  <p><input type="submit" name="" value="Search"></p>
+
+					</form>
+				</article>
+			</section>
+
+			<aside id = "side_news" >
+
+			</aside>
+
+		</div>
+
+		<footer id = "the_footer" >
+			(c) DOSS
+		</footer>
+
+	</div>
+
+	<!--<script>
+		if(document.getElementsByName('floor_area').value != [0-9])
+			alert("Floor Area must be integer")
+
+	</script>!-->
+
+	</body>
+</html>

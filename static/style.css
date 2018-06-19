@@ -1,0 +1,177 @@
+* {
+	margin: 0px;
+	padding: 0px;
+	font-family: Trebuchet MS;
+}
+
+h1 {
+	font: bold 20px;
+}
+
+h2 {
+	font: bold 14px;
+}
+
+header, section, footer, aside, nav, article, hgroup {
+	display: block;
+}
+
+body {
+	background-color: gray;
+	width: 100%;
+	display: -webkit-box;
+	-webkit-box-pack: center;
+}
+
+#big_wrapper {
+	max-width: 1000px;
+	margin: 20px 0px;
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-box-flex: 1;
+}
+
+#top_header {
+	background: black;
+	padding: 20px;
+	font-size: 30px;
+	color: gray;
+}
+
+#top_header img, h1 {
+	display: inline-block;
+}
+
+#top_menu {
+	background: black;
+	color: white;
+	-webkit-border-radius: 25px;
+}
+
+#top_menu li {
+	display: inline-block;
+	list-style: none;
+	padding: 5px;
+	font: bold 14px;
+}
+
+#top_menu a {
+	color: white;
+	font: bold;
+}
+
+#new_div {
+	display: -webkit-box;
+	-webkit-box-orient: horizontal;
+}
+
+#main_section {
+	-webkit-box-flex: 1;
+	margin: 20px;
+	padding: 20px;
+	-webkit-box-orient: horizontal;
+	/*background-color: rgb(204,122,178);
+	float: left;
+	width: 660px;
+	margin: 30px; /* 720px, 280 left */
+}
+
+#range {
+	position: absolute;
+	top: 10px;
+	left: 300px;
+}
+
+#contact_us li {
+	display: inline-block;
+	text-align: center;
+}
+
+#side_news {
+	height: 300px;
+	margin: 30px 0px;
+	padding: 30px;
+	-webkit-border-radius: 25px;
+}
+
+#the_footer {
+	/*clear: both;*/
+	text-align: center;
+	padding: 20px;
+	background: black;
+	color: gray;
+	border-top: 2px solid white;
+}
+
+#details {
+
+}
+
+#prediction {
+	position: relative;
+	top: 140px;
+	font-size: 1cm;
+}
+
+.row {
+	width: 900px;
+}
+
+iframe {
+	width: 1366px;
+	height: 768px;
+	-webkit-transform: scale(0.5);
+}
+
+article {
+	display: inline-block;
+	background: white;
+	/*border: 1px solid black;*/
+	padding: 20px;
+	margin-bottom: 15px;
+	-webkit-border-radius: 25px;
+}
+
+article p, h1, h2, li {
+	padding: 10px;
+	list-style: none;
+}
+
+article footer {
+	text-align: right;
+}
+
+a:link {
+    color: black;
+    background-color: transparent;
+    text-decoration: none;
+}
+a:visited {
+    color: black;
+    background-color: transparent;
+    text-decoration: none;
+}
+a:hover {
+    color: black;
+    background-color: transparent;
+    text-decoration: none;
+}
+a:active {
+    color: black;
+    background-color: transparent;
+    text-decoration: none;
+}
+span{
+  width: 30px;
+  height: 50px;
+  border-color: black;
+  background-color: transparent;
+  border-style: solid;
+  border-width: 2px;
+  border-top: 25px;
+  border-bottom: 25px;
+}
+img{
+  width: 200px;
+  height: 200px;
+}

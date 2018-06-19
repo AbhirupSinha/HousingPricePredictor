@@ -1,0 +1,74 @@
+<html>
+<head lang = "en" >
+		<meta charset = "utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>More Properties</title>
+		<link rel = "stylesheet" type = "text/css" href = "{{url_for('static', filename='style.css') }}" />
+		<!<link rel = "stylesheet" type = "text/css" href = "style.css" />>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css"
+		integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+		<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+
+	</head>
+
+	<body>
+
+	<div id = "big_wrapper" >
+
+		<header id = "top_header" >
+			<h1>More Properties</h1>
+		</header>
+
+		<div id = "new_div" class = "container" >
+
+			<section id = "main_section" >
+
+				<article>
+
+					<header>
+						<hgroup>
+							<h2></h2>
+						</hgroup>
+					</header>
+						<div class = "row" >
+
+							{% for PropertyURL,ImageURL,BHK,Area in PropertyURL_ImageURL_Area_BHK_Price %}
+							<div class="col-4">
+								<a href={{ PropertyURL }} >
+								  <img src= {{ ImageURL }} alt="Property Image Not Available">
+								  <br>
+								  <span> {{ BHK }} BHK </span>
+								  &nbsp
+								  <span> {{ Area }} sq. ft. </span>
+								  <!--&nbsp
+								  <span> Rs. {{ Price }} lakhs </span>-->
+								</a>
+							</div>
+							&nbsp
+							{% endfor %}
+
+						</div>
+
+					<footer>
+
+					</footer>
+
+				</article>
+
+			</section>
+
+			<aside id = "side_news" >
+			</aside>
+
+		</div>
+
+		<footer id = "the_footer" >
+				(c) DOSS
+		</footer>
+
+	</div>
+	</body>
+</html>
