@@ -61,7 +61,13 @@ class Searcher:
         #print(type(predictor.regressor))
         #print(predictor.price)
         #return 0
-        return predictor.getPredictedPrice(inp)
+        price = predictor.getPredictedPrice(inp)
+        if price:
+            return price
+        else:
+            predictor.managePredictor()
+            return predictor.getPredictedPrice(inp)
+            
     
     def viewProperties(self, BHK, Locality, FurnishingStatus, TypeofSale):
         scraper = Scraper()
