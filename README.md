@@ -1,5 +1,5 @@
 # Housing Price Predictor
-This is a housing price predictor based on ML techniques where users can search and see expected price range of properties based on various input parameters like BHK, furnishing status, desired floor area, etc. Data have been scraped from MagicBricks site and are of some localities of Kolkata like Jadavpur, Dhakuria, etc. Backend framework is built using Python and for frontend HTML, along with CSS, is used. 
+This is a housing price predictor based on ML techniques where users can search and see expected price range of properties based on various input parameters like BHK, furnishing status, desired floor area, etc. Data have been scraped from MagicBricks site and are of different areas of Kolkata like North Kolkata, South Kolkata etc. Backend framework is built using Python and for frontend HTML, along with CSS, is used. 
 
 The details and functions of individual scripts are as follow:
 <br>hello.py: entry point of the python application
