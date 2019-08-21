@@ -1,16 +1,15 @@
 # -*- coding: utf-8 -*-
 
-import re
-import requests
-import warnings
+import urllib3
+import certifi
 from bs4 import BeautifulSoup
 import csv
 from datetime import datetime
 import pandas as pd
 import configparser
 import numpy as np
-import time
 from Property import Property
+#import time
 
 #start_time = time.time()
 class Scraper:
@@ -38,125 +37,60 @@ class Scraper:
 
     def scrapeData(self,properties,dataset):
         if(self.getConfig()):
-            URL = "https://www.magicbricks.com/property-for-sale/residential-real-estate"
-            for area in self.places:
-                for bed in self.bedroom:
-                    for pageno in range(1,51):
-                        parameters = dict(bedroom = bed, proptype = 'Multistorey-Apartment,Builder-Floor-Apartment,Penthouse,Studio-Apartment', cityName = area, page = pageno)
-                        page = requests.get(url = URL, params = parameters)
-                        with open('scrapinglog.txt','a') as log_file:
-                            log = str(page.status_code)+','+area+','+str(bed)+','+str(pageno)+','+str(datetime.now())+'\n'
-                            log_file.write(log)
-                            #if page.status_code == 404:
-                            #    continue
-                            #print(page.status_code)
-                        soup = BeautifulSoup(page.text, 'lxml')	# parse the html using BeautifulSoup and store in variable `soup`
-                        propertyID_box = [ID['data-objid'] for ID in soup.find_all('span', attrs={'class':'domcache js-domcache-srpgtm'})]	# Take out all <span> of property IDs and get its value    
-                        for ID in propertyID_box:
-                            if ID not in dataset['PropertyID']:
-                                properties.PropertyID = int(ID)
-                                #propertyid_box.append(ID)
-                                properties.Area = area
-                                #area_box.append(area)
-                                url = soup.find('div', attrs={'id':'resultBlockWrapper'+ID})['onclick'].split(',')[1].strip()
-                                url = re.sub(r"[']",'',url)
-                                properties.PropertyURL = url
-                                #url_box.append(url)
-                                price = soup.find_all('span', attrs={'id': 'domcache_srp_'+ID})[1]['data-price']
-                                try:
-                                    properties.Price = int(price)
-                                    #price_box.append(int(price))	
-                                except ValueError:
-                                    #print('Price Issue:'+url)
-                                    properties.Price = np.nan
-                                    #price_box.append(np.nan)
-                                location = soup.find_all('span', attrs={'id': 'domcache_srp_'+ID})[0]['data-objlmtdname']
-                                properties.Locality = location
-                                #location_box.append(location)
-                                typeofsale = soup.find_all('span', attrs={'id': 'domcache_srp_'+ID})[1]['data-transactiontype']
-                                properties.TypeofSale = typeofsale.split(' ')[0]
-                                #typeofsale_box.append(typeofsale.split(' ')[0])
-                                propertytype = soup.find_all('span', attrs={'id': 'domcache_srp_'+ID})[0]['data-objproptypeid']
-                                properties.PropertyType = propertytype
-                                #propertytype_box.append(propertytype)
-                                furnishing = soup.find_all('span', attrs={'id': 'domcache_srp_'+ID})[1]['data-furnshingstatus']
-                                properties.FurnishingStatus = furnishing
-                                #furnishing_box.append(furnishing)
-                                society = soup.find('input', attrs={'id': 'projectSocietyName'+ID})['value']
-                                properties.Society = society
-                                #society_box.append(society)
-                                floor = soup.find_all('span', attrs={'id': 'domcache_srp_'+ID})[1]['data-floorno']
-                                try:
-                                    properties.FloorNo = int(floor)
-                                    #floor_box.append(int(floor))
-                                except ValueError:
-                                    #print('Floor Issue:'+url)
-                                    properties.FloorNo = 0
-                                    #floor_box.append(0)
-                                bedrooms = soup.find_all('span', attrs={'id': 'domcache_srp_'+ID})[1]['data-bedroom']
-                                properties.BHK = int(bedrooms)
-                                #bedroom_box.append(int(bedrooms))
-                                bathrooms = soup.find_all('span', attrs={'id': 'domcache_srp_'+ID})[1]['data-bathroom']
-                                try:
-                                    properties.Bathrooms = bathrooms
-                                    #bathroom_box.append(int(bathrooms))  
-                                except ValueError:
-                                    properties.Bathrooms = round(int(bedrooms)/2)
-                                    #bathroom_box.append(round(int(bedrooms)/2)) #assumption- per 2 rooms 1 bathroom is present                        
-                                    #print('Bathroom Issue:'+url)
-                                proppage = requests.get(url)
-                                pagesoup = BeautifulSoup(proppage.text, 'lxml')  
-                                imgurl = pagesoup.find('img', attrs={'id': 'bigImageId'})['data-src']
-                                properties.ImageURL = imgurl
-                                #imgurl_box.append(imgurl)
-                                try:
-                                    carpetarea = pagesoup.find('div', attrs={'id': 'carpetArea'}).text
-                                    carpetarea = re.sub(r"[,]",'',carpetarea)
-                                    properties.CarpetArea = int(carpetarea)
-                                    #carpetarea_box.append(int(carpetarea))                  
-                                    try:
-                                        superarea = pagesoup.find('div', attrs={'id': 'coveredArea'}).text
-                                        superarea = re.sub(r"[,]",'',superarea)
-                                        properties.CoveredArea = int(superarea)
-                                        #superarea_box.append(int(superarea))
-                                    except AttributeError:
-                                        #print('Super Area Issue:'+url)
-                                        properties.CoveredArea = properties.CarpetArea
-                                        #superarea_box.append(int(carpetarea))
-                                except  AttributeError:
-                                    try:
-                                        superarea = pagesoup.find('div', attrs={'id': 'coveredArea'}).text
-                                        superarea = re.sub(r"[,]",'',superarea)
-                                        properties.CarpetArea = int(superarea)
-                                        properties.CoveredArea = int(superarea)
-                                        #print('carpet Area Issue:'+url)
-                                        #carpetarea_box.append(int(superarea))
-                                    except AttributeError:
-                                        continue
-                                try:
-                                    properties.Price_per_sqft_carpetarea = round(properties.Price / properties.CarpetArea)
-                                except ValueError:
-                                    properties.Price_per_sqft_carpetarea = np.nan
-                                try:
-                                    properties.Price_per_sqft_coveredarea = round(properties.Price / properties.CoveredArea)
-                                except ValueError:
-                                    properties.Price_per_sqft_coveredarea = np.nan
-                                properties.City = 'Kolkata'
-                                dataset = dataset.append(pd.Series([properties.PropertyID, properties.PropertyType, 
-                                                                    properties.BHK, properties.CarpetArea, properties.CoveredArea, 
-                                                                    properties.Bathrooms, properties.FloorNo, properties.TypeofSale, 
-                                                                    properties.FurnishingStatus, properties.Society, properties.Locality, 
-                                                                    properties.Area, properties.City, properties.Price, 
-                                                                    properties.Price_per_sqft_coveredarea, properties.Price_per_sqft_carpetarea, 
-                                                                    properties.PropertyURL,  properties.ImageURL], 
-                                                                    index = dataset.columns),ignore_index = True)
-                        time.sleep(1)
-        log_file.close()
-        return dataset
+            http = urllib3.PoolManager(cert_reqs='CERT_REQUIRED',ca_certs=certifi.where())
+            for i in self.places:
+                for j in self.bedroom:
+                    URL = 'https://www.magicbricks.com/property-for-sale/residential-real-estate?bedroom='+j+'&proptype=Multistorey-Apartment,Builder-Floor-Apartment,Penthouse,Studio-Apartment&Locality='+i+'&cityName=Kolkata'
+                    page = http.request('GET', URL)
+                    soup = BeautifulSoup(page.data, 'lxml')																				# parse the html using BeautifulSoup and store in variable `soup`    
+                    price_box = soup.find_all('span', attrs={'class': 'm-srp-card__price'})												# Take out all <span> of prices and get its values        
+                    BHK_box = soup.find_all('span', attrs={'class': 'm-srp-card__title__bhk'})											# Take out all <span> of BHK details and get its values        
+                    floorSize_box = [floor['content'] for floor in soup.find_all('meta',attrs={'itemprop':'floorSize'})]	 			# Take out all <meta> of property floorarea and get its values       
+                    propertyID_box = [ID['data-objid'] for ID in soup.find_all('span', attrs={'class':'domcache js-domcache-srpgtm'})]	# Take out all <span> of property IDs and get its values        
+                    location_box = [location['content'] for location in soup.find_all('meta', attrs={'itemprop':'addressLocality'})]	# Take out all <meta> of property locations and get its values
+                    URL_box = [link['href'] for link in soup.find_all('a', attrs={'class': 'm-srp-card__title'})]           			# Take out all <a> tags and get property URLs
+                    image_box = [link['data-src'] for link in soup.find_all('img', attrs={'class':'m-photo__img lazy'})]
+                    posted_box = soup.find_all('span', attrs={'itemprop':'dateCreated'})
+                    try:
+                        for k in range(0,len(propertyID_box)):
+                            properties.PropertyID = propertyID_box[k]
+                            properties.BHK = BHK_box[0].text.split('BHK')[0].strip()
+                            if("Call" in price_box[k].text.strip()):
+                                properties.Price = np.nan
+                            else:
+                                properties.Price = price_box[k].text.split(" ")[0].strip()
+                                if(price_box[k].text.split(" ")[1].strip()=="Cr"):
+                                    properties.Price = float(properties.Price) * 100
+                            location = location_box[k]
+                            if(len(location.split(","))>=2):
+                                properties.Locality = location.split(",")[1].strip()
+                            else:
+                                properties.Locality = location.strip()
+                            if properties.Locality not in self.places:
+                                properties.Locality = np.nan
+                            properties.Bathrooms = soup.find('input', attrs={'id':'bathroom'+propertyID_box[k]})['value']
+                            properties.TypeofSale = soup.find('input', attrs={'id':'transactionType'+propertyID_box[k]})['value'].strip().split(" ")[0]
+                            properties.FurnishingStatus = soup.find('input', attrs={'id':'furnshingStatus'+propertyID_box[k]})['value'].strip()
+                            properties.FloorArea = floorSize_box[k].split("FTK")[0].strip()
+                            properties.PropertyURL = URL_box[k]
+                            properties.PostedOn = posted_box[k].text.strip()
+                            properties.ImageURL = image_box[k]
+                            if int(properties.PropertyID) not in dataset.PropertyID.values:
+                                dataset = dataset.append(pd.DataFrame(data = {'PropertyID':[properties.PropertyID], 'BHKs':[properties.BHK], 'FloorArea':[properties.FloorArea], 
+                                      'Bathrooms':[properties.Bathrooms], 'Type_of_Sale':[properties.TypeofSale], 'Furnishing_Status':[properties.FurnishingStatus], 'Locality':[properties.Locality], 
+                                      'Price_in_Lacs':[properties.Price], 'Property_URL':[properties.PropertyURL], 'Image_URL':[properties.ImageURL], 'Posted_On':[properties.PostedOn],
+                                      'Last_Modified_On':[datetime.now()]}, columns = ['PropertyID','BHKs','FloorArea','Bathrooms','Type_of_Sale','Furnishing_Status','Locality','Price_in_Lacs','Property_URL',
+                                      'Image_URL','Posted_On','Last_Modified_On']), ignore_index = True)
+                            else:
+                                pass
+                    except IndexError:
+                        pass
+                    
+            return dataset
 
     def processData(self,dataset):
         dataset = dataset.drop_duplicates(subset = ['PropertyID'])
-        #dataset = dataset.dropna(axis = 0)
+        dataset = dataset.dropna(axis = 0)
         dataset = dataset.reset_index(drop = True)
         return dataset
     
@@ -166,10 +100,10 @@ class Scraper:
             self.lastSamplePoint = len(dataset) - 1
         except FileNotFoundError:
             print("Dataset does not exist. Creating dataset....")
-            dataset = pd.DataFrame(columns = ['PropertyID','PropertyType','BHK','CarpetArea','SuperArea','Bathrooms','Floor_No','Type_of_Sale','Furnishing_Status','Society','Locality','Area','City','Price','Price_per_sqft_Superarea','Price_per_sqft_Carpetarea','Property_URL','Image_URL'])
+            dataset = pd.DataFrame(columns = ['PropertyID','BHKs','FloorArea','Bathrooms','Type_of_Sale','Furnishing_Status','Locality','Price_in_Lacs','Property_URL','Image_URL','Posted_On','Last_Modified_On'])
             with open('house_data.csv', 'a', encoding = 'utf-8', newline = '') as csv_file:
                 writer = csv.writer(csv_file)
-                writer.writerow(("PropertyID", "Property Type", "BHK", "CarpetArea", "SuperArea", "Bathrooms", "Floor_No", "Type_of_Sale", "Furnishing_Status", "Society", "Locality", "Area", "City", "Price", "Price_per_sqft_Superarea", "Price_per_sqft_Carpetarea", "Property_URL", "Image_URL"))
+                writer.writerow(("PropertyID", "BHKs", "FloorArea", "Bathrooms", "Type_of_Sale", "Furnishing_Status", "Locality", "Price_in_Lacs", "Property_URL", "Image_URL","Posted_On", "Last_Modified_On"))
         return dataset
     
     def writeData(self,dataset):
